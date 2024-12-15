@@ -841,7 +841,7 @@ class StrMOwOth
                 cout << "---- ---- ---- ---- Iteration START" << endl;
             }
 
-            if (Number_GetLastChar(PlateA) == CharracterSet[0])
+            if (Number_GetLastChar(PlateA) == CharracterSet[0] && Number_GetLastChar(PlateB) != CharracterSet[0])
             {
                 if (isDebug)
                 {
@@ -1230,12 +1230,26 @@ class StrMOwOth
     
     string Division (string InA, string InB, int InDecimalPrecision)
     {
+
         //this will only work for positive integers
 
         if (isDebug)
         {
             cout << "---- ---- ---- ---- ---- ---- ---- ---- DIVISION START" << endl;
         }
+
+        if (isDebug)
+        {
+            cout << "---- ---- ---- ---- CHECK IF 0" << endl;
+        }
+
+        if (Number_GetAbs(InB) == "0")
+        {
+            cout << fowo.cOwOut.ConsoleQuick("error","division by 0") << endl;
+            return ResultIfError;
+        }
+
+        
 
         /*
 
@@ -1487,8 +1501,15 @@ class StrMOwOth
     {
         // A mod B or A % B
 
+        if (Number_GetAbs(InB) == "0")
+        {
+            cout << fowo.cOwOut.ConsoleQuick("error","division by 0") << endl;
+            return ResultIfError;
+        }
+
         if (Number_IsPosIsNeg(InB) == "-")
         {
+            cout << fowo.cOwOut.ConsoleQuick("error","modular is negative") << endl;
             return ResultIfError;
         }
         else
@@ -1513,4 +1534,24 @@ class StrMOwOth
     }
 
 };
+
+/*
+
+string TempA = "0";
+string TempB = "5";
+for(TempA = "-10" ; smowo.Number_Compare(TempA,"10") == "A<B" ; TempA = smowo.Addition_Safe(TempA,"1"))
+{
+    for(TempB = "-10" ; smowo.Number_Compare(TempB,"10") == "A<B" ; TempB = smowo.Addition_Safe(TempB,"1"))
+    {
+        cout << "TempA : " << TempA << " , TempB : " << TempB;
+        cout << " , A+B : " << smowo.Addition_Safe(TempA,TempB);
+        cout << " , A-B : " << smowo.Subtraction_Safe(TempA,TempB);
+        cout << " , A*B : " << smowo.Multiplication_Safe(TempA,TempB);
+        cout << " , A/B : " << smowo.Division_Safe(TempA,TempB,4);
+        cout << " , A%B : " << smowo.Modulation(TempA,TempB),
+        cout << endl; 
+    }
+}
+
+*/
 
