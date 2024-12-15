@@ -334,6 +334,12 @@ class StrMOwOth
         return ResultIfError;
     }
 
+    string Number_GetBase ()
+    {
+        //give "10", in base ten, is ten, in base2, is 2, in base16 , is 16
+        return Charracter_Shorthand_Set(1) + Charracter_Shorthand_Set(0);
+    }
+
 
 
     char Number_GetLastChar(string InString)
@@ -445,7 +451,28 @@ class StrMOwOth
 
     string Number_Compare(string InA, string InB)
     {
-        return "";
+        if (Number_IsPosIsNeg(InA) == "-" && Number_IsPosIsNeg(InB) == "+")
+        {
+            return "A<B";
+        }
+        else if (Number_IsPosIsNeg(InA) == "+" && Number_IsPosIsNeg(InB) == "-")
+        {
+            return "A>B";
+        }
+        else if (Number_IsPosIsNeg(InA) == "-" && Number_IsPosIsNeg(InB) == "-")
+        {
+            string tempResult = Number_Compare_Abs( Number_GetAbs(InA), Number_GetAbs(InB));
+
+            if (tempResult == "A>B"){return "A<B";}
+            else if (tempResult == "A<B") {return "A>B";}
+            else {return "A=B";}
+        }
+        else
+        {
+            return Number_Compare_Abs(InA,InB);
+        }
+
+        return ResultIfError;
     }
 
     string Number_BorrowFlip(string InA, int InPosition)
@@ -1420,7 +1447,70 @@ class StrMOwOth
         return Number_CleanZeros(PlateR);
     }
 
+    string Division_Safe (string InA, string InB, int InDecimalPrecesion)
+    {
+        string TempInA = InA;
+        string TempInB = InB;
 
+        //STEP1 : clean zeros
+        TempInA = Number_CleanZeros(TempInA);
+        TempInB = Number_CleanZeros(TempInB);
+        
+        //STEP2 : strip away negative sign
+        TempInA = Number_GetAbs(InA);
+        TempInB = Number_GetAbs(InB);
+        string InAPosNeg = Number_IsPosIsNeg(InA);
+        string InBPosNeg = Number_IsPosIsNeg(InB);
+
+        //STEP3 : deal with decimal points
+        while( Number_FracLength(TempInA,false) + Number_FracLength(TempInB,false) > 0)
+        {
+            TempInA = Multiplication_Safe(TempInA, Number_GetBase() );
+            TempInB = Multiplication_Safe(TempInB, Number_GetBase() );
+        }
+
+        //STEP4 : arith
+        string TempAnswer = Division(TempInA, TempInB, InDecimalPrecesion);
+
+        //STEP5 : negative ?
+        if (InAPosNeg == InBPosNeg)
+        {
+            return TempAnswer;
+        }
+        else
+        {
+            return CharracterNeg + TempAnswer;
+        }
+    }
+
+    string Modulation (string InA, string InB)
+    {
+        // A mod B or A % B
+
+        if (Number_IsPosIsNeg(InB) == "-")
+        {
+            return ResultIfError;
+        }
+        else
+        {
+            string TempA = InA;
+            string TempB = InB;
+
+            while( Number_Compare(TempA,TempB) == "A>B" || Number_Compare(TempA,TempB) == "A=B" || Number_Compare(TempA,Charracter_Shorthand_Set_Zero()) == "A<B")
+            {
+                if (Number_Compare(TempA,TempB) == "A>B" || Number_Compare(TempA,TempB) == "A=B")
+                {
+                    TempA = Subtraction_Safe(TempA,TempB);
+                }
+                else if (Number_Compare(TempA,Charracter_Shorthand_Set_Zero()) == "A<B")
+                {
+                    TempA = Addition_Safe(TempA,TempB);
+                }
+            }
+
+            return TempA;
+        }
+    }
 
 };
 
