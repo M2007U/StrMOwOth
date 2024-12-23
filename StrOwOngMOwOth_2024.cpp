@@ -1533,6 +1533,34 @@ class StrMOwOth
         }
     }
 
+
+
+    string Exponent_Int(string InBase, string InPow)
+    {
+        if
+        (
+            Number_FracLength(InPow, false) > 0 ||
+            Number_IsPosIsNeg(InPow) == "-"
+        )
+        {
+            cout << fowo.cOwOut.ConsoleQuick("error","power must be a positive integer") << endl;
+            return ResultIfError;
+        }
+
+        string Plate_Box = Charracter_Shorthand_Set(1);
+        string Plate_Pow = InPow;
+
+        while( Number_Compare( Plate_Pow , Charracter_Shorthand_Set_Zero() ) == "A>B" )
+        {
+            Plate_Box = Multiplication_Safe(Plate_Box , InBase);
+            Plate_Pow = Subtraction_Safe( Plate_Pow , Charracter_Shorthand_Set(1) );
+            //cout << "Plate_Pow : " << Plate_Pow << endl;
+        }
+
+        return Plate_Box;
+    }
+
+
 };
 
 /*
